@@ -548,4 +548,33 @@ document.querySelector('header .grow').insertAdjacentHTML('afterend','<button cl
 $('#restart').onclick=()=>{ov='new';overlay()};
 if(S&&S.cells&&S.cells.some(v=>v!=null)){render(true);setMsg('Welcome back.')}else newGame(1);
 </script>
-<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script></body></html>
+<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><!--EGBACK--><style>
+.eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
+  background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
+.eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}
+.eg-back:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+.eg-back.float{position:fixed;z-index:9000;top:calc(10px + env(safe-area-inset-top,0px));left:calc(10px + env(safe-area-inset-left,0px));
+  background:rgba(10,10,14,.62);color:#fff;border-color:rgba(255,255,255,.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+</style><script>
+/* Back to all games: sits at the start of the game's header; floats top-left on screens without one */
+(function(){
+  const ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+  const make=f=>{const a=document.createElement('a');a.href='../index.html';a.className='eg-back'+(f?' float':'');a.setAttribute('aria-label','Back to all games');a.title='All games';a.innerHTML=ICON;return a};
+  const vis=e=>!!(e&&e.getClientRects().length&&getComputedStyle(e).visibility!=='hidden');
+  const G=document.documentElement.dataset.game||'',TGT={casino:'#app > .bar',wildtrumps:'.brand'};
+  if(G==='rarebit'||G==='cambio')return; // these two already have their own back-to-games icon
+  let busy=false;
+  function place(){
+    if(busy)return;busy=true;
+    try{
+      const ex=document.querySelector('.eg-back');
+      const h=[...document.querySelectorAll((TGT[G]?TGT[G]+',':'')+'header')].find(vis);
+      if(h){if(ex&&ex.parentNode===h)return;ex&&ex.remove();h.prepend(make(false))}
+      else if(!ex||!vis(ex)){ex&&ex.remove();document.body.appendChild(make(true))}
+    }finally{busy=false}
+  }
+  const go=()=>{place();let q=false;new MutationObserver(()=>{if(busy||q)return;q=true;requestAnimationFrame(()=>{q=false;place()})}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','class','style']})};
+  document.body?go():addEventListener('DOMContentLoaded',go);
+})();
+</script><!--/EGBACK-->
+</body></html>
