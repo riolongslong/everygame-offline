@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=IBM+Plex+Mono:wght@500&family=Anton&family=Barlow+Condensed:wght@600;700&family=Alfa+Slab+One&family=Bungee&family=Manrope:wght@700;800&family=Archivo+Black&family=Unbounded:wght@900&family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Syne:wght@800&family=DM+Sans:wght@500;700&family=Karla:wght@500;700&family=Figtree:wght@500;800;900&family=Limelight&family=Fredoka:wght@600;700&family=Gochi+Hand&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Silkscreen:wght@400;700&family=IBM+Plex+Mono:wght@500&family=Anton&family=Barlow+Condensed:wght@600;700&family=Alfa+Slab+One&family=Bungee&family=Manrope:wght@700;800&family=Archivo+Black&family=Unbounded:wght@900&family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Syne:wght@800&family=DM+Sans:wght@500;700&family=Karla:wght@500;700&family=Figtree:wght@500;800;900&family=Limelight&family=Fredoka:wght@600;700&family=Gochi+Hand&display=swap">
 <style>
 /* Layout: a games cabinet. Neutral shell, then three tiles that each carry their own game's identity: pixel strata, felt card table, pub mahogany. */
 :root{
@@ -185,6 +185,17 @@ a.tile.mm{background:#120f24;color:#f4f1ff;box-shadow:inset 0 0 0 1px #352d63;ba
 .nx .tags span{font:700 11px var(--body);letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);color:#a9a4b4}
 .nx .go{font:800 15px var(--body);background:var(--c,#fff);color:var(--ci,#111);padding:11px 20px;border-radius:10px}
 .nx .lg{position:absolute;z-index:3}
+/* Starting XI */
+.sx{background:repeating-linear-gradient(180deg,#1d7a3a 0 22px,#22893f 22px 44px);box-shadow:inset 0 0 0 1px #2fa356;--c:#ffd84d;--ci:#2a1d00}
+.sx .scene{display:grid;place-items:center end;padding-right:16px}
+.sx .gr{display:flex}
+.sx .gr i{width:52px;height:74px;border-radius:7px;display:flex;flex-direction:column;padding:6px 7px;box-sizing:border-box;box-shadow:0 6px 12px rgba(0,0,0,.4),inset 0 0 0 2px rgba(255,255,255,.55);font-style:normal;color:#1d1405}
+.sx .gr i b{font:400 24px 'Lilita One','Arial Black',sans-serif;line-height:1}.sx .gr i s{text-decoration:none;font:800 10px var(--body)}
+.sx .gr .b{background:linear-gradient(155deg,#ffd9b5,#d59158 55%,#8e4f22);transform:rotate(-12deg) translate(14px,8px)}
+.sx .gr .g{background:linear-gradient(155deg,#fff2b0,#f3c84a 55%,#b7861a);z-index:1;transform:scale(1.12)}
+.sx .gr .s{background:linear-gradient(155deg,#fff,#cfd8e2 55%,#8996a4);transform:rotate(12deg) translate(-14px,8px)}
+.sx .lg{left:18px;top:50%;transform:translateY(-50%);font:400 34px 'Lilita One','Arial Black',sans-serif;line-height:.9;color:#fff;text-shadow:0 3px 0 #0a3d1c}
+.sx .lg em{display:block;font-style:normal;color:#ffd84d;font-size:44px}
 /* Minesweeper */
 .cb{background:#1d1b3d;box-shadow:inset 0 0 0 1px #3a3c78;--c:#ff6b4a;--ci:#151327}
 .cb .scene{display:grid;place-items:center end;padding-right:22px}
@@ -400,6 +411,12 @@ body.v-kids .rg-btn{color:#18244a}
         <div class="tags"><span>Vs computer</span><span>Online</span><span>10 packs</span></div>
         <span class="go">Deal the cards</span>
       </div>
+    </a>
+
+    <a class="tile nx sx" data-cat="two kids" href="startingxi/index.html" aria-label="Play Starting XI">
+      <div class="scene"><div class="gr" aria-hidden="true"><i class="b"><b>74</b><s>MID</s></i><i class="g"><b>93</b><s>FWD</s></i><i class="s"><b>81</b><s>DEF</s></i></div><div class="lg">Starting<em>XI</em></div></div>
+      <div class="info"><p>Win players head-to-head, double up on nations and survive penalty shoot-outs. After 18 rounds your best eleven decides the match.</p>
+        <div class="tags"><span>Vs computer</span><span>Football cards</span><span>3 levels</span></div><span class="go">Pick your XI</span></div>
     </a>
 
     <a class="tile sh" data-cat="group" href="shed/index.html" aria-label="Play Shed">
