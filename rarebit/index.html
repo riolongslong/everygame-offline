@@ -731,7 +731,7 @@ const T={
  30:{n:"Solid",e:"🟦",f:"Familiar, but not the first thing most people say."},
  60:{n:"Rare",e:"🟪",f:"A genuinely uncommon answer. Good dig."},
  85:{n:"Deep Cut",e:"🟧",f:"Specialist knowledge. Very few people find this."},
- 100:{n:"Rarebit",e:"🟨",f:"A standout discovery: unexpected, and spot on."}};
+ 100:{n:"Rarebit",e:"🟨",f:"The one standout answer for this prompt. Each prompt has exactly one."}};
 /* how far each tier digs, in the game's depth units (see Z): topsoil down to the Earth's centre */
 const DEPTH={10:22,15:48,30:118,60:232,85:352,100:500};
 /* starting guess at the share of players giving an answer of each tier, before any real data */
@@ -836,7 +836,8 @@ function schedule(upto){
     picked.forEach(q=>{last[q.id]=d;famLast[q.family]=d});
     SCHED.push(picked.sort((a,b)=>(a.diff||2)-(b.diff||2)).map(q=>q.id))}
   return SCHED}
-const promptsFor=key=>{const n=dayNum(key);return n<0?[]:schedule(n)[n]};
+/* the bank ships a fixed schedule (no prompt repeats until all have had a day); the old in-page shuffle is the fallback */
+const promptsFor=key=>{const n=dayNum(key);if(n<0)return[];if(IDX&&IDX.sched&&IDX.sched[n]&&IDX.epoch===EPOCH)return IDX.sched[n].filter(id=>QM.has(id));return schedule(n)[n]};
 
 /* ---------- the crowd: measured where real data exists, estimated otherwise ----------
    CROWD comes from the shared store: every player's daily answers (and practice answers),
