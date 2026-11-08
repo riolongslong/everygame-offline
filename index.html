@@ -199,6 +199,16 @@ a.tile.mm{background:#120f24;color:#f4f1ff;box-shadow:inset 0 0 0 1px #352d63;ba
 .ng .lg{left:18px;top:42%;transform:translateY(-50%);font:400 36px 'Lilita One','Arial Black',sans-serif;line-height:.9;color:#fff;text-shadow:0 3px 0 #1a2c66}
 .ng .lg em{display:block;font-style:normal;color:#ffd84d;font-size:24px;letter-spacing:.08em}
 /* Starting XI */
+.nh{background:#000;box-shadow:inset 0 0 0 1px #123;--c:#33e6ff;--ci:#001018}
+.nh .scene{display:grid;place-items:center end;padding-right:22px}
+.nh .rk{width:64px;height:100px;border-radius:10px;position:relative;box-shadow:-3px -3px 0 -1px #ff2f4f,3px -3px 0 -1px #ffd21a,-3px 3px 0 -1px #33c8ff,3px 3px 0 -1px #2bff6a,0 0 18px rgba(51,230,255,.45)}
+.nh .rk::before{content:"";position:absolute;left:4px;right:4px;top:50%;height:1px;background:rgba(255,255,255,.25)}
+.nh .rk i{position:absolute;border-radius:50%;left:50%;transform:translate(-50%,-50%)}
+.nh .rk .a{top:22%;width:20px;height:20px;border:4px solid #fff;box-sizing:border-box;box-shadow:0 0 0 2px #2bff6a,0 0 12px #2bff6a}
+.nh .rk .b{top:80%;width:20px;height:20px;border:4px solid #fff;box-sizing:border-box;box-shadow:0 0 0 2px #ff2f4f,0 0 12px #ff2f4f}
+.nh .rk .p{top:56%;left:38%;width:10px;height:10px;background:#fff;box-shadow:0 0 10px #33c8ff}
+.nh .lg{left:18px;top:42%;transform:translateY(-50%);font:900 30px 'Orbitron','Arial Black',sans-serif;line-height:.95;color:#fff;text-shadow:0 0 8px #33e6ff,0 0 20px #33e6ff;letter-spacing:.04em}
+.nh .lg em{display:block;font-style:normal;color:#ff2f4f;text-shadow:0 0 8px #ff2f4f,0 0 20px #ff2f4f;font-size:24px}
 .ps{background:radial-gradient(70% 40% at 50% 0%,rgba(255,122,26,.35),transparent 70%),#140d1f;box-shadow:inset 0 0 0 1px #3b2a55;--c:#ff7a1a;--ci:#2a1000}
 .ps .scene{display:grid;place-items:center end;padding-right:16px}
 .ps .rl{display:flex;gap:6px}.ps .rl i{font-style:normal;background:#070910;border:2px solid #ffb347;border-radius:10px;padding:10px 10px;font:400 22px 'Lilita One','Arial Black',sans-serif;color:#ffb347;box-shadow:inset 0 6px 10px rgba(0,0,0,.8),0 6px 14px rgba(0,0,0,.4)}
@@ -448,6 +458,12 @@ body.v-kids .rg-btn{color:#18244a}
       <div class="scene"><div class="gr" aria-hidden="true"><i class="h a"><b></b></i><i class="ball"></i><i class="h b"><b></b></i></div><div class="lg">Noggin<em>LEAGUE</em></div></div>
       <div class="info"><p>Big-head football: one minute, one-on-one. Headers, volleys and power-ups, then win the league and spend your prize money on upgrades.</p>
         <div class="tags"><span>League season</span><span>2 players</span><span>Power-ups</span></div><span class="go">Kick off</span></div>
+    </a>
+
+    <a class="tile nx nh" data-cat="two kids" href="neonhockey/index.html" aria-label="Play Neon Hockey">
+      <div class="scene"><div class="rk" aria-hidden="true"><i class="a"></i><i class="p"></i><i class="b"></i></div><div class="lg">NEON<em>HOCKEY</em></div></div>
+      <div class="info"><p>Glowing air hockey. Drag your mallet, bank shots off the neon walls and get first to seven. Play the computer or a friend on one screen.</p>
+        <div class="tags"><span>Vs computer</span><span>2 players</span><span>3 levels</span></div><span class="go">Face off</span></div>
     </a>
 
     <a class="tile nx ps" data-cat="solo" href="perfectseason/index.html" aria-label="Play Perfect Season">
