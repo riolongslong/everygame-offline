@@ -1425,9 +1425,35 @@ async function savePhotos(prog){const all=allCards();let done=0,got=0;
 function toJpeg(u){return new Promise(res=>{const im=new Image();if(/^https?:/.test(u))im.crossOrigin="anonymous";
   im.onload=()=>{try{const s=Math.min(1,560/im.naturalWidth),cv=document.createElement("canvas");cv.width=Math.round(im.naturalWidth*s);cv.height=Math.round(im.naturalHeight*s);
     cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);res(cv.toDataURL("image/jpeg",.78))}catch(e){res(null)}};im.onerror=()=>res(null);im.src=u})}
+const LAND_DECKS=new Set(["dinos","animals","cars","wonders"]);
+const BAD_DINO=/skelet|skull|mount|cast|fossil|holotype|bone|specimen|tooth|teeth|claw|vertebra|femur|jaw|museum|exhibit/i,
+  BAD_ANY=/map|diagram|size|scale|comparison|chart|logo|signature|flag|range|distribution|cladogram|plan|svg|coat of arms|stamp|coin|poster|drawing of/i,
+  GOOD_DINO=/restor|reconstruct|life|model|statue|sculpt|illustrat|artist|render|paleoart|palaeoart|depict/i;
+function imgSize(u){return new Promise(res=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>res({w:im.naturalWidth,h:im.naturalHeight});im.onerror=()=>res(null);im.src=u})}
+async function wikiJSON(url){for(let t=0;t<4;t++){try{const r=await fetch(url);if(r.status===429||r.status>=500){await sleep(1200*(t+1));continue}if(!r.ok)return null;return await r.json()}catch(e){return null}}return null}
+/* best landscape picture for a card: lead photo if it fills the card (and, for dinosaurs, isn't a skeleton), otherwise the best match from the page's other pictures */
+async function landscapeFor(c,r){
+  const title=(WIKI_TITLE[c.deck]||{})[c.name]||c.name,dino=c.deck==="dinos";
+  const lead=r.src,ls=await imgSize(lead),la=ls?ls.w/ls.h:0,leadName=decodeURIComponent(lead.split("/").pop());
+  if(la>=1.3&&la<=2.6&&!(dino&&(BAD_DINO.test(leadName)||!GOOD_DINO.test(leadName))))return lead;
+  const ml=await wikiJSON("https://en.wikipedia.org/api/rest_v1/page/media-list/"+encodeURIComponent(title.replace(/ /g,"_")));
+  const items=(ml&&ml.items||[]).filter(it=>it.type==="image"&&it.srcset&&it.srcset.length);
+  const scored=[];
+  for(const it of items){const txt=(it.title||"")+" "+((it.caption&&it.caption.text)||"");
+    if(BAD_ANY.test(txt)||/\.(svg|gif|tif)/i.test(it.title||""))continue;if(dino&&BAD_DINO.test(txt))continue;
+    let s=0;if(dino&&GOOD_DINO.test(txt))s+=5;if(it.showInGallery)s+=1;
+    const best=it.srcset.find(x=>/500px-/.test(x.src))||it.srcset[it.srcset.length-1];const u=(best.src.startsWith("//")?"https:":"")+best.src;
+    scored.push({u,s})}
+  scored.sort((a,b)=>b.s-a.s);let fall=null;
+  for(const cand of scored.slice(0,10)){const z=await imgSize(cand.u);if(!z)continue;const a=z.w/z.h;
+    if(a>=1.3&&a<=2.6)return cand.u;if(!fall&&a>=1.1)fall=cand.u}
+  return dino&&fall?fall:(la>=1.1?lead:(fall||lead));
+}
 async function exportPhotos(prog){const out={},missing=[],all=allCards();let i=0;
-  for(const c of all){i++;let data=PHOTOS[c.deck]?.[c.id]||null;
-    if(!data&&!NO_BUNDLE.has(c.deck)){const r=await wikiFor(c);if(r)for(const cand of imgCands(r)){data=await toJpeg(await cachedURL(cand)||cand);if(data)break}}
+  for(const c of all){i++;let data=LAND_DECKS.has(c.deck)?null:(PHOTOS[c.deck]?.[c.id]||null);
+    if(!data&&!NO_BUNDLE.has(c.deck)){const r=await wikiFor(c);
+      if(r){const cands=imgCands(r);if(LAND_DECKS.has(c.deck)){try{const u=await landscapeFor(c,r);if(u&&!cands.includes(u))cands.unshift(u);else if(u){cands.splice(cands.indexOf(u),1);cands.unshift(u)}}catch(e){}}
+        for(const cand of cands){data=await toJpeg(await cachedURL(cand)||cand);if(data)break}}}
     if(data)(out[c.deck]||(out[c.deck]={}))[c.id]=data;else if(!NO_BUNDLE.has(c.deck))missing.push(DECKS[c.deck].title+": "+c.name);prog(i,all.length)}
   const txt="/* Wild Trumps photo pack: lead images from Wikipedia, resized for the cards */\nwindow.WT_PHOTOS="+JSON.stringify(out)+";\n/* missing: "+missing.join(" | ").replace(/\*\//g,"")+" */\n";
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"text/javascript"}));a.download="wt-photos.js";document.body.append(a);a.click();setTimeout(()=>a.remove(),500);
@@ -1438,9 +1464,7 @@ function fitPhoto(pic,bg,c){
     const slot=(pic.clientWidth||300)/(pic.clientHeight||142),ar=iw/ih,off=Math.abs(Math.log(ar/slot));
     pic.classList.remove("contain");pic.querySelector("img.blur")?.remove();bg.style.objectPosition="";
     if(PEOPLE_DECKS.has(c.deck)){bg.style.objectPosition=ar<1?"50% 18%":"50% 28%";return}
-    if(off>.32){const b=document.createElement("img");b.className="blur";b.alt="";b.src=bg.src;pic.prepend(b);pic.classList.add("contain");
-      if(c.deck==="dinos")bg.style.objectPosition="0% 50%"}
-    else if(c.deck==="dinos")bg.style.objectPosition="30% 55%"};
+    if(c.deck==="dinos")bg.style.objectPosition="40% 55%"};
   if(bg.complete&&bg.naturalWidth)go();else bg.addEventListener("load",go,{once:true});
 }
 function wikiPhoto(el,c){
