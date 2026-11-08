@@ -1368,23 +1368,26 @@ const PEOPLE_DECKS=new Set(["hp","starwars","villains","singers","football","bas
 const wikiCache=new Map();
 function wikiFor(c){
   const key=c.deck+"|"+c.name;if(wikiCache.has(key))return wikiCache.get(key);
-  let saved=null;try{saved=JSON.parse(localStorage.getItem("wt.wiki."+key)||"null")}catch(e){}
-  const remember=v=>{try{localStorage.setItem("wt.wiki."+key,JSON.stringify(v))}catch(e){}};
+  let saved=null;try{saved=JSON.parse(localStorage.getItem("wt.wiki2."+key)||"null")}catch(e){}
+  const remember=v=>{try{localStorage.setItem("wt.wiki2."+key,JSON.stringify(v))}catch(e){}};
   const job=saved?Promise.resolve(saved.src?saved:null):(async()=>{
     if(navigator.onLine===false)return null;
     const t=(WIKI_TITLE[c.deck]||{})[c.name],cands=[...new Set([t,c.name].filter(Boolean))],ok=WIKI_OK[c.deck];
     for(const title of cands){
-      let r;try{const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),6000);
-        r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(title.replace(/ /g,"_")),{signal:ctl.signal});clearTimeout(tm)}
-      catch(e){return null}                       // offline or blocked: try again next time
+      let r;for(let tries=0;tries<4;tries++){
+        try{const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),8000);
+          r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(title.replace(/ /g,"_")),{signal:ctl.signal});clearTimeout(tm)}
+        catch(e){return null}                     // offline or blocked: try again next time
+        if(r.status!==429&&r.status<500)break;await sleep(1200*(tries+1))}
       if(r.status===404)continue;if(!r.ok)return null;
       let j;try{j=await r.json()}catch(e){return null}
       if(j.type==="disambiguation")continue;
       if(ok&&!ok.test((j.description||"")+" "+(j.extract||"").slice(0,200)))continue;
       if(!j.thumbnail){remember({src:""});return null}
-      let src=j.thumbnail.source;const ow=j.originalimage&&j.originalimage.width;
-      if(ow>=640&&/\/\d+px-/.test(src))src=src.replace(/\/\d+px-/,"/640px-");
-      const v={src,page:(j.content_urls&&j.content_urls.desktop&&j.content_urls.desktop.page)||""};remember(v);return v}
+      // Wikimedia only serves its standard thumbnail widths, so ask for 500px when the original is big enough
+      const alt=j.thumbnail.source,ow=j.originalimage&&j.originalimage.width;let src=alt;
+      if(ow>=500&&/\/\d+px-/.test(alt))src=alt.replace(/\/\d+px-/,"/500px-");
+      const v={src,alt,page:(j.content_urls&&j.content_urls.desktop&&j.content_urls.desktop.page)||""};remember(v);return v}
     remember({src:""});return null})();
   wikiCache.set(key,job);return job;
 }
@@ -1392,27 +1395,30 @@ const PHOTO_CACHE="wt-photos-v1";
 async function cachedURL(src){try{const c=await caches.open(PHOTO_CACHE),r=await c.match(src);if(r)return URL.createObjectURL(await r.blob())}catch(e){}return null}
 async function cacheImg(src){try{const c=await caches.open(PHOTO_CACHE);if(await c.match(src))return true;const r=await fetch(src,{mode:"cors"});if(!r.ok)return false;await c.put(src,r.clone());return true}catch(e){return false}}
 const allCards=()=>Object.values(DECKS).flatMap(d=>d.cards);
+const imgCands=r=>[...new Set([r.src,r.alt].filter(Boolean))];
+const NO_BUNDLE=new Set(["hp","starwars","villains"]);   // character images on Wikipedia are copyrighted film stills: shown live, never bundled
 async function savePhotos(prog){const all=allCards();let done=0,got=0;
   for(let i=0;i<all.length;i+=6)await Promise.all(all.slice(i,i+6).map(async c=>{
-    if(PHOTOS[c.deck]?.[c.id]){got++}else{const r=await wikiFor(c);if(r&&await cacheImg(r.src))got++}done++;prog(done,all.length,got)}));
+    if(PHOTOS[c.deck]?.[c.id]){got++}else{const r=await wikiFor(c);if(r){for(const u of imgCands(r))if(await cacheImg(u)){got++;break}}}done++;prog(done,all.length,got)}));
   return{got,total:all.length}}
 function toJpeg(u){return new Promise(res=>{const im=new Image();if(/^https?:/.test(u))im.crossOrigin="anonymous";
   im.onload=()=>{try{const s=Math.min(1,560/im.naturalWidth),cv=document.createElement("canvas");cv.width=Math.round(im.naturalWidth*s);cv.height=Math.round(im.naturalHeight*s);
     cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);res(cv.toDataURL("image/jpeg",.78))}catch(e){res(null)}};im.onerror=()=>res(null);im.src=u})}
 async function exportPhotos(prog){const out={},missing=[],all=allCards();let i=0;
   for(const c of all){i++;let data=PHOTOS[c.deck]?.[c.id]||null;
-    if(!data){const r=await wikiFor(c);if(r){const u=await cachedURL(r.src)||r.src;data=await toJpeg(u)}}
-    if(data)(out[c.deck]||(out[c.deck]={}))[c.id]=data;else missing.push(DECKS[c.deck].title+": "+c.name);prog(i,all.length)}
+    if(!data&&!NO_BUNDLE.has(c.deck)){const r=await wikiFor(c);if(r)for(const cand of imgCands(r)){data=await toJpeg(await cachedURL(cand)||cand);if(data)break}}
+    if(data)(out[c.deck]||(out[c.deck]={}))[c.id]=data;else if(!NO_BUNDLE.has(c.deck))missing.push(DECKS[c.deck].title+": "+c.name);prog(i,all.length)}
   const txt="/* Wild Trumps photo pack: lead images from Wikipedia, resized for the cards */\nwindow.WT_PHOTOS="+JSON.stringify(out)+";\n/* missing: "+missing.join(" | ").replace(/\*\//g,"")+" */\n";
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"text/javascript"}));a.download="wt-photos.js";document.body.append(a);a.click();setTimeout(()=>a.remove(),500);
-  return{saved:all.length-missing.length,missing}}
+  return{saved:Object.values(out).reduce((n,o)=>n+Object.keys(o).length,0),missing}}
 function wikiPhoto(el,c){
   if(PHOTOS[c.deck]?.[c.id]){const pic=el.querySelector(".pic");if(pic){pic.classList.add("photo");if(PEOPLE_DECKS.has(c.deck)){const bg=pic.querySelector("img.bg");if(bg)bg.style.objectPosition="50% 22%"}pic.insertAdjacentHTML("beforeend",'<span class="cr">Photo: Wikipedia</span>')}return}
-  wikiFor(c).then(async r=>{if(!r||!el.isConnected)return;const src=await cachedURL(r.src)||r.src;if(src===r.src)cacheImg(r.src);const im=new Image();im.decoding="async";
+  wikiFor(c).then(async r=>{if(!r||!el.isConnected)return;const cands=imgCands(r);let k=0;
+    const next=async()=>{if(k>=cands.length)return;const u=cands[k++];const src=await cachedURL(u)||u;if(src===u)cacheImg(u);const im=new Image();im.decoding="async";im.onerror=next;
     im.onload=()=>{const pic=el.querySelector(".pic"),bg=pic&&pic.querySelector("img.bg");if(!bg)return;
       bg.src=src;if(PEOPLE_DECKS.has(c.deck))bg.style.objectPosition="50% 22%";pic.classList.add("photo");
       if(!pic.querySelector(".cr"))pic.insertAdjacentHTML("beforeend",'<span class="cr">Photo: Wikipedia</span>')};
-    im.src=src});
+    im.src=src};next()});
 }
 function fmt(x){return x<10&&x%1?x.toFixed(1):x.toLocaleString("en-GB")}
 function makeCard(c){
@@ -1437,7 +1443,7 @@ function makeCard(c){
 
 function setupTable(deckId){
   const d=DECKS[deckId];G.deck=d;
-  d.cards.forEach(c=>{if(!PHOTOS[c.deck]?.[c.id])wikiFor(c).then(r=>{if(r)cacheImg(r.src)})});
+  d.cards.forEach(c=>{if(!PHOTOS[c.deck]?.[c.id])wikiFor(c).then(async r=>{if(r)for(const u of imgCands(r))if(await cacheImg(u))break})});
   $("shelf").hidden=true;$("table").hidden=false;layer.innerHTML="";
   layout();
   G.badges=[0,1].map(()=>{const b=document.createElement("div");b.className="badge";b.style.cssText=`--c1:${d.c1}`;
@@ -1670,7 +1676,7 @@ document.fonts.ready.then(buildShelf);
  const run=async(fn,label)=>{if(busy)return;if(navigator.onLine===false){msg("You're offline. Connect to the internet to fetch the photos.");return}busy=true;sv.disabled=ex.disabled=true;bar.hidden=false;
    try{await fn((d,n,g)=>{pr.style.width=Math.round(d/n*100)+"%";msg(`${label} ${d} of ${n}${g!=null?` · ${g} photos`:""}…`)})}finally{busy=false;sv.disabled=ex.disabled=false;setTimeout(()=>bar.hidden=true,800)}};
  sv&&sv.addEventListener("click",()=>run(async p=>{const r=await savePhotos(p);msg(`Saved ${r.got} of ${r.total} card photos on this device. ${r.total-r.got?`${r.total-r.got} card${r.total-r.got>1?'s have':' has'} no free photo on Wikipedia, so they keep their painted art.`:"Every card is ready for offline play."}`)},"Saving"));
- ex&&ex.addEventListener("click",()=>run(async p=>{const r=await exportPhotos(p);msg(`Exported wt-photos.js with ${r.saved} photos${r.missing.length?` (${r.missing.length} card${r.missing.length>1?'s':''} had none)`:""}. Send that file to Claude to build the photos into the game.`)},"Packing"));
+ ex&&ex.addEventListener("click",()=>run(async p=>{const r=await exportPhotos(p);msg(`Exported wt-photos.js with ${r.saved} photos${r.missing.length?` (${r.missing.length} card${r.missing.length>1?'s':''} had none)`:""}. Wizards, Galaxy Wars and Villains keep their painted art. Send the file to Claude to build the photos into the game.`)},"Packing"));
  if(Object.keys(PHOTOS).length)msg("Photos are built into this version, so every pack works offline.");}
 </script>
 
