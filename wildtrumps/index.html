@@ -46,7 +46,14 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .pk .t b,.tbox .t b{font-family:var(--display);font-weight:400;font-size:30px;line-height:1;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.45)}
 .pk .t span,.tbox .t span{font-family:var(--data);font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-size:12px;color:rgba(255,255,255,.88)}
 .pk .s{position:absolute;top:0;left:100%;width:26px;height:100%;background:var(--c2);transform-origin:left;transform:rotateY(90deg);border-radius:0 6px 6px 0}
-.pk .tag,.tbox .tag{position:absolute;top:14px;left:14px;background:var(--gold);color:var(--gold-ink);font-family:var(--display);font-size:14px;padding:3px 8px;border-radius:4px;transform:rotate(-6deg);box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.pk .f.full img,.tbox .f.full img{inset:0;width:100%;height:100%;aspect-ratio:auto;border-radius:10px}
+.pk .f.full::after,.tbox .f.full::after{content:"";position:absolute;inset:0;border-radius:10px;background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,transparent 22%,transparent 48%,color-mix(in srgb,var(--c1) 55%,transparent) 66%,color-mix(in srgb,var(--c1) 92%,#000) 100%);box-shadow:inset 0 0 0 5px var(--c1),inset 0 0 0 7px rgba(255,255,255,.4)}
+.pk .f.full .t,.tbox .f.full .t{z-index:2;padding:0 14px;bottom:14px}
+.pk .f.full .t b,.tbox .f.full .t b{font-size:34px;text-shadow:0 2px 0 rgba(0,0,0,.5),0 6px 18px rgba(0,0,0,.6)}
+.pk .f.full .t em,.tbox .f.full .t em{font-style:normal;font-family:var(--data);font-weight:700;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold);text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.pk .sheen,.tbox .sheen{position:absolute;inset:0;z-index:1;border-radius:10px;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.28) 42%,transparent 52%);background-size:250% 100%;background-position:100% 0;transition:background-position .8s ease}
+.pack:hover .sheen,.pack:focus-visible .sheen{background-position:0 0}
+.pk .tag,.tbox .tag{z-index:3;position:absolute;top:14px;left:14px;background:var(--gold);color:var(--gold-ink);font-family:var(--display);font-size:14px;padding:3px 8px;border-radius:4px;transform:rotate(-6deg);box-shadow:0 2px 6px rgba(0,0,0,.4)}
 .pack .desc{font-size:14px;color:#b9cec7;max-width:28ch;line-height:1.4}
 
 /* ---------- table ---------- */
@@ -157,7 +164,11 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .pic .flag{position:absolute;top:6px;right:8px;font-size:26px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
 .c.down .pic img.bg,.c.down .pic .emo{animation-play-state:paused}
 .photobar{display:grid;gap:10px;margin-top:8px;padding:14px 16px;border:1px solid var(--felt-line);border-radius:14px;background:rgba(0,0,0,.22)}.photobar b{display:block;color:var(--gold);margin-bottom:2px}.photobar span{font-size:13px;opacity:.85}.photobar .pbtns{display:flex;gap:8px;flex-wrap:wrap}.photobar .ghost{background:transparent;color:inherit;border:1px solid var(--felt-line)}.photobar .pbar{height:6px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden}.photobar .pbar i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
-.pic.photo .emo{display:none}.pic.photo img.bg{animation-duration:24s}.pic .cr{position:absolute;right:6px;bottom:4px;font-size:9px;letter-spacing:.04em;color:#fff;opacity:.75;text-shadow:0 1px 2px rgba(0,0,0,.9);pointer-events:none}
+.pic.photo .emo{display:none}.pic.photo img.bg{animation-name:kbp}
+.pic img.blur{position:absolute;inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);max-width:none;object-fit:cover;filter:blur(12px) brightness(.62) saturate(1.15)}
+.pic.contain img.bg{position:relative;z-index:1;object-fit:contain}
+.pic .sz{z-index:2}.pic .flag,.pic .trump{z-index:3}
+@keyframes kbp{from{transform:scale(1)}to{transform:scale(1.035)}}.pic.photo img.bg{animation-duration:24s}.pic .cr{position:absolute;left:7px;top:5px;z-index:2;font-size:9px;letter-spacing:.04em;color:#fff;opacity:.75;text-shadow:0 1px 2px rgba(0,0,0,.9);pointer-events:none}
 @media (prefers-reduced-motion:reduce){.pic img.bg,.pic .emo{animation:none}}
 </style>
 
@@ -1124,27 +1135,34 @@ function fog(ctx,W,H,y,c){const g=ctx.createLinearGradient(0,y-H*.2,0,y+H*.2);g.
 function hex(c){c=c.replace("#","");return[0,2,4].map(i=>parseInt(c.substr(i,2),16))}
 function lighten(c,a){return"rgb("+hex(c).map(v=>Math.round(v+(255-v)*a)).join(",")+")"}
 function shade(c,a){return"rgb("+hex(c).map(v=>Math.round(v*(1-a))).join(",")+")"}
+const SHB={};
+function shapeBox(s){if(SHB[s])return SHB[s];let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;
+  for(const d of SH[s]){const n=d.match(/-?\d+(?:\.\d+)?/g).map(Number);for(let i=0;i+1<n.length;i+=2){x0=Math.min(x0,n[i]);x1=Math.max(x1,n[i]);y0=Math.min(y0,n[i+1]);y1=Math.max(y1,n[i+1])}}
+  return SHB[s]={x0,x1,y0,y1,w:x1-x0,h:y1-y0}}
+/* Size chart drawn to one true scale: the silhouette is stretched to the card's exact length (wingspan for pterosaurs) and height, next to a 1.8 m person */
 function sizeChart(ctx,card,W,H){
-  const pw=W*.4,ph=H*.36,px=W-pw-10,py=H-ph-10;
-  ctx.fillStyle="rgba(12,22,10,.72)";ctx.beginPath();ctx.roundRect(px,py,pw,ph,10);ctx.fill();
+  const pw=W*.4,ph=H*.4,px=W-pw-8,py=H-ph-8;
+  ctx.fillStyle="rgba(10,18,8,.78)";ctx.beginPath();ctx.roundRect(px,py,pw,ph,10);ctx.fill();
   ctx.strokeStyle="rgba(255,207,63,.9)";ctx.lineWidth=2;ctx.stroke();
-  const L=card.v[0],Hm=card.v[1],fly=card.shape==="ptero",sea=["mosa","plesio"].includes(card.shape);
-  const innerW=pw-28,innerH=ph-30,gx=px+12,gy=py+ph-12;
-  const span=L+2.2, tall=Math.max(Hm,1.8)*1.15;
-  const ppm=Math.min(innerW/span,innerH/tall);
-  const step=L>20?5:L>8?2:1;
-  ctx.strokeStyle="rgba(255,207,63,.22)";ctx.lineWidth=1;
-  for(let m=0;m*ppm<=innerW+1;m+=step){ctx.beginPath();ctx.moveTo(gx+m*ppm,gy);ctx.lineTo(gx+m*ppm,py+16);ctx.stroke()}
-  for(let m=0;m*ppm<=innerH;m+=step){ctx.beginPath();ctx.moveTo(gx,gy-m*ppm);ctx.lineTo(px+pw-12,gy-m*ppm);ctx.stroke()}
-  ctx.strokeStyle="rgba(255,207,63,.7)";ctx.beginPath();ctx.moveTo(gx,gy);ctx.lineTo(px+pw-12,gy);ctx.stroke();
-  // human: path is 36 units tall = 1.8 m
-  const hk=1.8*ppm/36;ctx.save();ctx.translate(gx+4,gy-36*hk);ctx.scale(hk,hk);ctx.fillStyle="#ffcf3f";ctx.fill(new Path2D(HUMAN));ctx.beginPath();ctx.arc(5,3.4,3.2,0,7);ctx.fill();ctx.restore();
-  // creature: path ~100 units long
-  const ck=L*ppm/100,cx=gx+4+12*hk+ppm*.5;
-  const baseY=fly||sea?gy-Math.max(1.2,Hm*.5)*ppm-30*ck:gy-58*ck;
-  drawShape(ctx,card.shape,cx,baseY,ck,"#f4f1e2");
-  ctx.fillStyle="#ffcf3f";ctx.font="600 "+Math.round(H*.065)+"px 'Barlow Condensed',sans-serif";ctx.textBaseline="top";
-  ctx.fillText((fly?"Wingspan ":"Length ")+L+" m",px+10,py+5);
+  const L=card.v[0],Hm=card.v[1],fly=card.shape==="ptero",bx=shapeBox(card.shape);
+  const fs=Math.round(H*.058);ctx.font="600 "+fs+"px 'Barlow Condensed',sans-serif";ctx.textBaseline="top";ctx.fillStyle="#ffcf3f";
+  ctx.fillText(fly?`Wingspan ${L} m`:`${L} m long · ${Hm} m tall`,px+10,py+6);
+  const gx=px+12,gy=py+ph-12,innerW=pw-24,innerH=ph-24-fs-6;
+  const flyH=fly?L*bx.h/bx.w:0,alt=fly?Math.max(1.4,Hm*.6):0;
+  const span=.7+.5+L,tall=Math.max(fly?alt+flyH:Hm,1.8);
+  const ppm=Math.min(innerW/span,innerH/(tall*1.08));
+  // metre grid
+  const step=span>20?5:span>8?2:1;ctx.strokeStyle="rgba(255,207,63,.2)";ctx.lineWidth=1;
+  for(let m=step;m*ppm<=innerW;m+=step){ctx.beginPath();ctx.moveTo(gx+m*ppm,gy);ctx.lineTo(gx+m*ppm,gy-innerH);ctx.stroke()}
+  for(let m=step;m*ppm<=innerH;m+=step){ctx.beginPath();ctx.moveTo(gx,gy-m*ppm);ctx.lineTo(gx+innerW,gy-m*ppm);ctx.stroke()}
+  ctx.strokeStyle="rgba(255,207,63,.75)";ctx.beginPath();ctx.moveTo(gx,gy);ctx.lineTo(gx+innerW,gy);ctx.stroke();
+  // person, exactly 1.8 m (path runs from 0.2 to 36 units)
+  const hk=1.8*ppm/35.8;ctx.save();ctx.translate(gx,gy-36*hk);ctx.scale(hk,hk);ctx.fillStyle="#ffcf3f";ctx.fill(new Path2D(HUMAN));ctx.beginPath();ctx.arc(5,3.4,3.2,0,7);ctx.fill();ctx.restore();
+  // animal: bounding box mapped onto its real length and height
+  const sx=L*ppm/bx.w,sy=fly?sx:Hm*ppm/bx.h,cx=gx+(.7+.5)*ppm,bottom=gy-alt*ppm;
+  ctx.save();ctx.translate(cx,bottom);ctx.scale(sx,sy);ctx.translate(-bx.x0,-bx.y1);ctx.fillStyle="#f4f1e2";for(const d of SH[card.shape])ctx.fill(new Path2D(d));ctx.restore();
+  // height marker
+  if(!fly){const tx=Math.min(cx+L*ppm+5,gx+innerW-2),top=gy-Hm*ppm;ctx.strokeStyle="rgba(255,207,63,.85)";ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(cx,top);ctx.lineTo(tx,top);ctx.stroke();ctx.setLineDash([])}
 }
 const ART={},SIZE={};
 function art(card){const k=card.deck+card.id;const ph=PHOTOS[card.deck]?.[card.id];if(ph)return ph;return ART[k]||(ART[k]=paintScene(card,520,300,{}))}
@@ -1227,11 +1245,14 @@ seg("modeSeg","mode");seg("diffSeg","diff");
 function savedName(){try{return localStorage.getItem("wt-name")||""}catch(e){return""}}
 function saveName(n){try{localStorage.setItem("wt-name",n)}catch(e){}}
 
+/* pack cover: the pack's top trump (best average rank across every stat), full-bleed, with its photo when the pack has one */
+function topTrump(d){let bi=0,bv=-1;d.rank.forEach((r,i)=>{const m=r.reduce((a,b)=>a+b,0)/r.length;if(m>bv){bv=m;bi=i}});return bi}
 function boxFront(d,heroIdx){
-  const c=d.cards[heroIdx];
-  return `<div class="f"><img src="${paintScene(c,372,386,{emoji:true})}" alt=""><div class="t"><b>${d.title}</b><span>${d.sub}</span></div></div><span class="tag">${d.cards.length} CARDS</span>`;
+  const c=d.cards[heroIdx],ph=PHOTOS[d.id]?.[c.id],pos=PEOPLE_DECKS.has(d.id)?"50% 20%":"50% 50%";
+  return `<div class="f full${ph?" ph":""}"><img src="${ph||paintScene(c,372,386,{emoji:true})}" alt="" style="object-position:${pos}"><i class="sheen"></i>
+    <div class="t"><em>★ ${c.name}</em><b>${d.title}</b><span>${d.sub}</span></div></div><span class="tag">${d.cards.length} CARDS</span>`;
 }
-const HERO={dinos:0,animals:3,cars:0,wonders:0,hp:0,starwars:5,villains:0,singers:0,football:0,basketball:0},FRONT={};
+const HERO=new Proxy({cars:0,basketball:0},{get:(o,k)=>o[k]??topTrump(DECKS[k])}),FRONT={};  // a couple of packs use a better-looking photo than their top trump
 function buildShelf(){
   for(const d of Object.values(DECKS))FRONT[d.id]=boxFront(d,HERO[d.id]);
   $("packs").innerHTML=Object.values(DECKS).map(d=>`<button class="pack" id="pack-${d.id}" data-d="${d.id}" style="--c1:${d.c1};--c2:${d.c2}" aria-label="Play the ${d.title} pack">
@@ -1411,12 +1432,23 @@ async function exportPhotos(prog){const out={},missing=[],all=allCards();let i=0
   const txt="/* Wild Trumps photo pack: lead images from Wikipedia, resized for the cards */\nwindow.WT_PHOTOS="+JSON.stringify(out)+";\n/* missing: "+missing.join(" | ").replace(/\*\//g,"")+" */\n";
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"text/javascript"}));a.download="wt-photos.js";document.body.append(a);a.click();setTimeout(()=>a.remove(),500);
   return{saved:Object.values(out).reduce((n,o)=>n+Object.keys(o).length,0),missing}}
+/* frame each photo for the card window: faces sit high in people packs; anything much wider or taller than the window is shown whole over a blurred copy of itself */
+function fitPhoto(pic,bg,c){
+  const go=()=>{const iw=bg.naturalWidth,ih=bg.naturalHeight;if(!iw)return;
+    const slot=(pic.clientWidth||300)/(pic.clientHeight||142),ar=iw/ih,off=Math.abs(Math.log(ar/slot));
+    pic.classList.remove("contain");pic.querySelector("img.blur")?.remove();bg.style.objectPosition="";
+    if(PEOPLE_DECKS.has(c.deck)){bg.style.objectPosition=ar<1?"50% 18%":"50% 28%";return}
+    if(off>.32){const b=document.createElement("img");b.className="blur";b.alt="";b.src=bg.src;pic.prepend(b);pic.classList.add("contain");
+      if(c.deck==="dinos")bg.style.objectPosition="0% 50%"}
+    else if(c.deck==="dinos")bg.style.objectPosition="30% 55%"};
+  if(bg.complete&&bg.naturalWidth)go();else bg.addEventListener("load",go,{once:true});
+}
 function wikiPhoto(el,c){
-  if(PHOTOS[c.deck]?.[c.id]){const pic=el.querySelector(".pic");if(pic){pic.classList.add("photo");if(PEOPLE_DECKS.has(c.deck)){const bg=pic.querySelector("img.bg");if(bg)bg.style.objectPosition="50% 22%"}pic.insertAdjacentHTML("beforeend",'<span class="cr">Photo: Wikipedia</span>')}return}
+  if(PHOTOS[c.deck]?.[c.id]){const pic=el.querySelector(".pic");if(pic){pic.classList.add("photo");fitPhoto(pic,pic.querySelector("img.bg"),c);pic.insertAdjacentHTML("beforeend",'<span class="cr">Photo: Wikipedia</span>')}return}
   wikiFor(c).then(async r=>{if(!r||!el.isConnected)return;const cands=imgCands(r);let k=0;
     const next=async()=>{if(k>=cands.length)return;const u=cands[k++];const src=await cachedURL(u)||u;if(src===u)cacheImg(u);const im=new Image();im.decoding="async";im.onerror=next;
     im.onload=()=>{const pic=el.querySelector(".pic"),bg=pic&&pic.querySelector("img.bg");if(!bg)return;
-      bg.src=src;if(PEOPLE_DECKS.has(c.deck))bg.style.objectPosition="50% 22%";pic.classList.add("photo");
+      bg.src=src;pic.classList.add("photo");fitPhoto(pic,bg,c);
       if(!pic.querySelector(".cr"))pic.insertAdjacentHTML("beforeend",'<span class="cr">Photo: Wikipedia</span>')};
     im.src=src};next()});
 }
