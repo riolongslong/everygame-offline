@@ -199,6 +199,18 @@ a.tile.mm{background:#120f24;color:#f4f1ff;box-shadow:inset 0 0 0 1px #352d63;ba
 .ng .lg{left:18px;top:42%;transform:translateY(-50%);font:400 36px 'Lilita One','Arial Black',sans-serif;line-height:.9;color:#fff;text-shadow:0 3px 0 #1a2c66}
 .ng .lg em{display:block;font-style:normal;color:#ffd84d;font-size:24px;letter-spacing:.08em}
 /* Starting XI */
+.ps{background:radial-gradient(70% 40% at 50% 0%,rgba(255,122,26,.35),transparent 70%),#140d1f;box-shadow:inset 0 0 0 1px #3b2a55;--c:#ff7a1a;--ci:#2a1000}
+.ps .scene{display:grid;place-items:center end;padding-right:16px}
+.ps .rl{display:flex;gap:6px}.ps .rl i{font-style:normal;background:#070910;border:2px solid #ffb347;border-radius:10px;padding:10px 10px;font:400 22px 'Lilita One','Arial Black',sans-serif;color:#ffb347;box-shadow:inset 0 6px 10px rgba(0,0,0,.8),0 6px 14px rgba(0,0,0,.4)}
+.ps .rl i:first-child{color:#fff}
+.ps .lg{left:18px;top:42%;transform:translateY(-50%);font:400 34px 'Lilita One','Arial Black',sans-serif;line-height:.9;color:#fff;text-shadow:0 3px 0 #3b1a00}
+.ps .lg em{display:block;font-style:normal;color:#ff7a1a;font-size:26px;letter-spacing:.04em}
+.spx{background:repeating-linear-gradient(180deg,#2f8a3c 0 22px,#38994a 22px 44px);box-shadow:inset 0 0 0 1px #4fb862;--c:#c6ff3d;--ci:#0b2a05}
+.spx .scene{display:grid;place-items:center end;padding-right:18px}
+.spx .wh{width:86px;height:86px;border-radius:50%;background:conic-gradient(#c6ff3d 0 45deg,#0e1f17 45deg 90deg,#86d600 90deg 135deg,#0e1f17 135deg 180deg,#c6ff3d 180deg 225deg,#0e1f17 225deg 270deg,#86d600 270deg 315deg,#0e1f17 315deg);box-shadow:0 0 0 4px #fff,0 8px 16px rgba(0,0,0,.4);position:relative}
+.spx .wh::after{content:"";position:absolute;inset:32px;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 3px #0e1f17}
+.spx .lg{left:18px;top:42%;transform:translateY(-50%);font:400 38px 'Lilita One','Arial Black',sans-serif;line-height:.9;color:#fff;text-shadow:0 3px 0 #0b3d1a}
+.spx .lg em{font-style:normal;color:#c6ff3d}
 .sx{background:repeating-linear-gradient(180deg,#1d7a3a 0 22px,#22893f 22px 44px);box-shadow:inset 0 0 0 1px #2fa356;--c:#ffd84d;--ci:#2a1d00}
 .sx .scene{display:grid;place-items:center end;padding-right:16px}
 .sx .gr{display:flex}
@@ -436,6 +448,18 @@ body.v-kids .rg-btn{color:#18244a}
       <div class="scene"><div class="gr" aria-hidden="true"><i class="h a"><b></b></i><i class="ball"></i><i class="h b"><b></b></i></div><div class="lg">Noggin<em>LEAGUE</em></div></div>
       <div class="info"><p>Big-head football: one minute, one-on-one. Headers, volleys and power-ups, then win the league and spend your prize money on upgrades.</p>
         <div class="tags"><span>League season</span><span>2 players</span><span>Power-ups</span></div><span class="go">Kick off</span></div>
+    </a>
+
+    <a class="tile nx ps" data-cat="solo" href="perfectseason/index.html" aria-label="Play Perfect Season">
+      <div class="scene"><div class="rl" aria-hidden="true"><i>82</i><i>–0</i></div><div class="lg">Perfect<em>SEASON</em></div></div>
+      <div class="info"><p>Spin a franchise and a decade, draft one real NBA player per spin and build a starting five. Can your five go 82–0?</p>
+        <div class="tags"><span>Basketball draft</span><span>Daily challenge</span><span>Real stats</span></div><span class="go">Spin the reels</span></div>
+    </a>
+
+    <a class="tile nx spx" data-cat="solo" href="spinxi/index.html" aria-label="Play Spin XI">
+      <div class="scene"><div class="wh" aria-hidden="true"></div><div class="lg">Spin <em>XI</em></div></div>
+      <div class="info"><p>Spin a league or a nation, draft real players into your formation, then take your eleven through a ten-match gauntlet. One defeat and you're out.</p>
+        <div class="tags"><span>Football draft</span><span>Daily challenge</span><span>Real squads</span></div><span class="go">Spin to draft</span></div>
     </a>
 
     <a class="tile sh" data-cat="group" href="shed/index.html" aria-label="Play Shed">

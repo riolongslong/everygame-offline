@@ -581,7 +581,7 @@ let M=null; // the current match
 function mkPlayer(side,team,up,ctrl,skill){
   const st=team.stats,u=up||{speed:0,jump:0,kick:0};
   return{side,team,ctrl,skill:skill??.6,x:side===0?260:W-260,y:GROUND,vx:0,vy:0,face:side===0?1:-1,
-    speed:290*st.speed*(1+.06*u.speed),jumpV:640*st.jump*(1+.045*u.jump),kickP:700*st.kick*(1+.075*u.kick),
+    speed:290*st.speed*(1+.06*u.speed),jumpV:640*st.jump*(1+.045*u.jump),kickP:520*st.kick*(1+.075*u.kick),
     kickT:0,kicked:false,fx:{},inp:{l:0,r:0,j:0,k:0},ai:{t:0,mv:0,j:0,k:0},onGround:true,bob:0}}
 function newMatch(o){
   M={mode:o.mode,len:o.len||60,time:o.len||60,score:[0,0],p:[mkPlayer(0,o.home,o.homeUp,o.c0,o.s0),mkPlayer(1,o.away,o.awayUp,o.c1,o.s1)],
@@ -624,7 +624,7 @@ function step(dt){
   // players bump into each other
   const [a,c]=M.p,dx=c.x-a.x;if(Math.abs(dx)<44&&Math.abs(a.y-c.y)<60){const push=(44-Math.abs(dx))/2,s=Math.sign(dx)||1;a.x-=push*s;c.x+=push*s}
   // ball
-  b.vy+=GRAV*.62*dt;b.vx*=1-.12*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.rot+=b.vx*dt/b.r;
+  b.vy+=GRAV*.44*dt;b.vx*=1-.12*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.rot+=b.vx*dt/b.r;
   if(b.y+b.r>GROUND){b.y=GROUND-b.r;if(b.vy>120)RG.sfx('bounce');b.vy=-b.vy*.72;b.vx*=.94;if(Math.abs(b.vy)<40)b.vy=0}
   if(b.y-b.r<0){b.y=b.r;b.vy=Math.abs(b.vy)*.7}
   if(b.x-b.r<0){b.x=b.r;b.vx=Math.abs(b.vx)*.6}
@@ -635,7 +635,7 @@ function step(dt){
     if(d<b.r+5&&d>0){const nx=ddx/d,ny=ddy/d;b.x=cx+nx*(b.r+5);b.y=cy+ny*(b.r+5);const dot=b.vx*nx+b.vy*ny;if(dot<0){b.vx-=1.7*dot*nx;b.vy-=1.7*dot*ny;RG.sfx('rim')}}}
   // heads, bodies, boots
   for(const p of M.p){
-    const h=headC(p);if(collideCircle(b,h,headR(p),p.vx,p.vy,.78,p.vy<-100?160:60)){M.last=p.side;if(Math.hypot(b.vx,b.vy)>380)RG.sfx('hit')}
+    const h=headC(p);if(collideCircle(b,h,headR(p),p.vx,p.vy,.78,p.vy<-100?110:40)){M.last=p.side;if(Math.hypot(b.vx,b.vy)>380)RG.sfx('hit')}
     const f=footPos(p);
     if(p.kickT>0&&!p.kicked&&Math.hypot(b.x-f.x,b.y-f.y)<b.r+f.r+10){
       p.kicked=true;M.last=p.side;let kp=p.kickP*(p.fx.boot>0?1.55:1)*(M.fx.big>0?.85:1);
@@ -643,7 +643,7 @@ function step(dt){
       if(p.fx.boot>0){M.shake=.25;burst(b.x,b.y,'#ffd84d',14)}}
     else if(collideCircle(b,f,f.r,p.vx,p.vy,.5,0))M.last=p.side;
   }
-  const sp=Math.hypot(b.vx,b.vy);if(sp>1350){b.vx*=1350/sp;b.vy*=1350/sp}
+  const sp=Math.hypot(b.vx,b.vy);if(sp>950){b.vx*=950/sp;b.vy*=950/sp}
   // power-up drops
   M.nextDrop-=dt;if(M.nextDrop<=0&&M.drops.length<1){const keys=Object.keys(POWERS);M.drops.push({k:keys[Math.floor(Math.random()*keys.length)],x:260+Math.random()*(W-520),y:-30,vy:90,life:7});M.nextDrop=10+Math.random()*6}
   for(const d of M.drops){if(d.y<GROUND-26)d.y+=d.vy*dt;else d.life-=dt;
@@ -675,7 +675,7 @@ function think(p,dt){
   const a=p.ai,b=M.ball,f=p.face,s=p.skill,myGoalX=p.side===0?0:W,inp=p.inp;
   a.t-=dt;
   if(a.t<=0){a.t=.16-.11*s+Math.random()*.05;
-    const lead=.28+.25*s,px=b.x+b.vx*lead,py=b.y+b.vy*lead+.5*GRAV*.62*lead*lead;
+    const lead=.28+.25*s,px=b.x+b.vx*lead,py=b.y+b.vy*lead+.5*GRAV*.44*lead*lead;
     const ballBehind=(b.x-p.x)*f<-10,danger=Math.abs(b.x-myGoalX)<330;
     let tx;
     if(ballBehind||danger&&(b.vx*f<0))tx=px-f*(36+20*(1-s)); // get goal-side of the ball
@@ -816,7 +816,7 @@ function loop(now){raf=requestAnimationFrame(loop);let dt=Math.min(.05,(now-last
     }
   }
   draw()}
-function stepBallOnly(dt){const b=M.ball;b.vy+=GRAV*.62*dt;b.vx*=1-1.5*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;if(b.y+b.r>GROUND){b.y=GROUND-b.r;b.vy*=-.5}b.x=Math.max(b.r,Math.min(W-b.r,b.x))}
+function stepBallOnly(dt){const b=M.ball;b.vy+=GRAV*.44*dt;b.vx*=1-1.5*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;if(b.y+b.r>GROUND){b.y=GROUND-b.r;b.vy*=-.5}b.x=Math.max(b.r,Math.min(W-b.r,b.x))}
 function finish(){if(M.state==='over')return;M.state='over';M.msg='FULL TIME';M.msgT=2;RG.sfx('whistle');const sc=M.score.slice();setTimeout(()=>M.onEnd&&M.onEnd(sc),1400)}
 
 /* ---------- input ---------- */
