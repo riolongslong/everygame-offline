@@ -185,6 +185,19 @@ a.tile.mm{background:#120f24;color:#f4f1ff;box-shadow:inset 0 0 0 1px #352d63;ba
 .nx .tags span{font:700 11px var(--body);letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);color:#a9a4b4}
 .nx .go{font:800 15px var(--body);background:var(--c,#fff);color:var(--ci,#111);padding:11px 20px;border-radius:10px}
 .nx .lg{position:absolute;z-index:3}
+/* Noggin League */
+.ng{background:radial-gradient(60% 30% at 20% 0%,rgba(255,250,210,.25),transparent 70%),radial-gradient(60% 30% at 80% 0%,rgba(255,250,210,.25),transparent 70%),#0b1430;box-shadow:inset 0 0 0 1px #2a3d70;--c:#ffd84d;--ci:#2a1d00}
+.ng .scene{display:grid;place-items:end end;padding:0 18px 10px 0;background:linear-gradient(transparent 72%,#249042 72%)}
+.ng .gr{display:flex;align-items:flex-end;gap:2px}
+.ng .gr .h{position:relative;width:62px;height:62px;border-radius:50%;background:#efc29d;box-shadow:inset -6px -6px 0 rgba(0,0,0,.12),0 5px 10px rgba(0,0,0,.4)}
+.ng .gr .h.b{background:#94603a}
+.ng .gr .h::before,.ng .gr .h::after{content:"";position:absolute;top:24px;width:12px;height:14px;border-radius:50%;background:#fff;box-shadow:inset 3px 2px 0 1px #111}
+.ng .gr .h::before{left:16px}.ng .gr .h::after{right:16px}
+.ng .gr .h b{position:absolute;left:14px;right:14px;top:-4px;height:22px;border-radius:30px 30px 6px 6px;background:#2b1a10}
+.ng .gr .h.b b{background:#111;height:16px}
+.ng .gr .ball{width:26px;height:26px;border-radius:50%;margin:0 4px 4px;background:radial-gradient(circle at 50% 50%,#111 0 22%,transparent 23%),#fff;box-shadow:0 4px 8px rgba(0,0,0,.4)}
+.ng .lg{left:18px;top:42%;transform:translateY(-50%);font:400 36px 'Lilita One','Arial Black',sans-serif;line-height:.9;color:#fff;text-shadow:0 3px 0 #1a2c66}
+.ng .lg em{display:block;font-style:normal;color:#ffd84d;font-size:24px;letter-spacing:.08em}
 /* Starting XI */
 .sx{background:repeating-linear-gradient(180deg,#1d7a3a 0 22px,#22893f 22px 44px);box-shadow:inset 0 0 0 1px #2fa356;--c:#ffd84d;--ci:#2a1d00}
 .sx .scene{display:grid;place-items:center end;padding-right:16px}
@@ -417,6 +430,12 @@ body.v-kids .rg-btn{color:#18244a}
       <div class="scene"><div class="gr" aria-hidden="true"><i class="b"><b>74</b><s>MID</s></i><i class="g"><b>93</b><s>FWD</s></i><i class="s"><b>81</b><s>DEF</s></i></div><div class="lg">Starting<em>XI</em></div></div>
       <div class="info"><p>Win players head-to-head, double up on nations and survive penalty shoot-outs. After 18 rounds your best eleven decides the match.</p>
         <div class="tags"><span>Vs computer</span><span>Football cards</span><span>3 levels</span></div><span class="go">Pick your XI</span></div>
+    </a>
+
+    <a class="tile nx ng" data-cat="two kids" href="noggin/index.html" aria-label="Play Noggin League">
+      <div class="scene"><div class="gr" aria-hidden="true"><i class="h a"><b></b></i><i class="ball"></i><i class="h b"><b></b></i></div><div class="lg">Noggin<em>LEAGUE</em></div></div>
+      <div class="info"><p>Big-head football: one minute, one-on-one. Headers, volleys and power-ups, then win the league and spend your prize money on upgrades.</p>
+        <div class="tags"><span>League season</span><span>2 players</span><span>Power-ups</span></div><span class="go">Kick off</span></div>
     </a>
 
     <a class="tile sh" data-cat="group" href="shed/index.html" aria-label="Play Shed">
