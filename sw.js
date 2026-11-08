@@ -1,5 +1,5 @@
 /* EveryGame Offline™ offline cache. The version changes on every build, so phones pick up new games automatically. */
-const VERSION='376ad88485';
+const VERSION='0f73a2c5ea';
 const FILES=["./index.html", "./rarebit/index.html", "./rarebit/bank/index.json", "./casino/index.html", "./wildtrumps/index.html", "./shed/index.html", "./cheat/index.html", "./wordl/index.html", "./memory/index.html", "./2048/index.html", "./backgammon/index.html", "./minesweeper/index.html", "./cambio/index.html", "./startingxi/index.html", "./noggin/index.html", "./connect4/index.html", "./findmatch/index.html", "./pool/index.html", "./soccer/index.html", "./numbermatch/index.html", "./basketball/index.html", "./privacy.html", "./manifest.webmanifest", "./icons/apple-touch-icon.png", "./icons/icon-1024.png", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/maskable-512.png"];
 const RUNTIME='rg-runtime';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(VERSION).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
