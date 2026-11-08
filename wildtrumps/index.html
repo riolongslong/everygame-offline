@@ -157,7 +157,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .pic .flag{position:absolute;top:6px;right:8px;font-size:26px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
 .c.down .pic img.bg,.c.down .pic .emo{animation-play-state:paused}
 .photobar{display:grid;gap:10px;margin-top:8px;padding:14px 16px;border:1px solid var(--felt-line);border-radius:14px;background:rgba(0,0,0,.22)}.photobar b{display:block;color:var(--gold);margin-bottom:2px}.photobar span{font-size:13px;opacity:.85}.photobar .pbtns{display:flex;gap:8px;flex-wrap:wrap}.photobar .ghost{background:transparent;color:inherit;border:1px solid var(--felt-line)}.photobar .pbar{height:6px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden}.photobar .pbar i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
-.pic.photo .emo{display:none}.pic.photo img.bg{animation-duration:24s}.pic .cr{position:absolute;left:6px;bottom:4px;font-size:9px;letter-spacing:.04em;color:#fff;opacity:.75;text-shadow:0 1px 2px rgba(0,0,0,.9);pointer-events:none}
+.pic.photo .emo{display:none}.pic.photo img.bg{animation-duration:24s}.pic .cr{position:absolute;right:6px;bottom:4px;font-size:9px;letter-spacing:.04em;color:#fff;opacity:.75;text-shadow:0 1px 2px rgba(0,0,0,.9);pointer-events:none}
 @media (prefers-reduced-motion:reduce){.pic img.bg,.pic .emo{animation:none}}
 </style>
 
@@ -193,7 +193,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 </div>
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script>
+<script src="photos.js"></script><script>
 /* ---------- Rooms without Claude: peer-to-peer, host keeps the table ----------
    The player who creates a room becomes its host. Everyone else connects straight to
    the host's device (PeerJS). The host holds every room document and sends each change
@@ -1354,7 +1354,7 @@ function move(el,p,ms,ease="cubic-bezier(.2,.8,.2,1)"){el.style.transition=`tran
 const WIKI_TITLE={
  animals:{"African Elephant":"African bush elephant","Blue Whale":"Blue whale","Bengal Tiger":"Bengal tiger","Grizzly Bear":"Grizzly bear","Polar Bear":"Polar bear","White Rhino":"White rhinoceros","Saltwater Crocodile":"Saltwater crocodile","Great White Shark":"Great white shark","Grey Wolf":"Wolf","Golden Eagle":"Golden eagle","Peregrine Falcon":"Peregrine falcon","Komodo Dragon":"Komodo dragon","Lion":"Lion","Orca":"Orca"},
  cars:{"Koenigsegg Agera RS":"Koenigsegg Agera","Ferrari LaFerrari":"LaFerrari","Lamborghini Aventador SVJ":"Lamborghini Aventador"},
- wonders:{"The Pantheon":"Pantheon, Rome","Moai of Easter Island":"Moai","Petra":"Petra","Colosseum":"Colosseum"},
+ wonders:{"Christ the Redeemer":"Christ the Redeemer (statue)","The Pantheon":"Pantheon, Rome","Moai of Easter Island":"Moai","Petra":"Petra","Colosseum":"Colosseum"},
  hp:{"Harry Potter":"Harry Potter (character)","Dobby":"Dobby (Harry Potter)"},
  starwars:{"Princess Leia":"Leia Organa","Rey":"Rey (Star Wars)","Emperor Palpatine":"Palpatine","Yoda":"Yoda"},
  villains:{"The Joker":"Joker (character)","Scar":"Scar (The Lion King)","Ursula":"Ursula (The Little Mermaid)","Loki":"Loki (Marvel Comics)","Captain Hook":"Captain Hook","The Grinch":"Grinch","Jafar":"Jafar (Aladdin)","Magneto":"Magneto (Marvel Comics)","Bowser":"Bowser (character)","Thanos":"Thanos","Sauron":"Sauron"},
