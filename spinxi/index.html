@@ -657,13 +657,13 @@ function overlay(anim){
     const dd=daily[today()];
     const seg=`<div class="seg">${Object.keys(FORM).map(f=>`<button data-form="${f}" aria-pressed="${cfg.form===f}">${f}</button>`).join('')}</div>`;
     h=`<div class="ov"><div class="sheet" role="dialog" aria-label="How to play"><h2>Spin <b>XI</b></h2>
-    <ol><li><b>Spin</b> to land on a league or a nation. Leagues then spin a club. Nations give you their best 26.</li>
+    ${ov==='rules'?`<ol><li><b>Spin</b> to land on a league or a nation. Leagues then spin a club. Nations give you their best 26.</li>
     <li>Draft <b>one player</b> and put him in an open slot. Out of position costs rating, shown on each button.</li>
     <li>Players from the <b>same club</b>, or three or more from <b>one nation</b>, add chemistry.</li>
     <li>You get <b>2 respins</b>. Eleven picks make your XI.</li>
-    <li>Then the <b>Gauntlet</b>: ten matches against real clubs, each tougher than the last. Lose once and you're out. Draws go to penalties.</li></ol>
+    <li>Then the <b>Gauntlet</b>: ten matches against real clubs, each tougher than the last. Lose once and you're out. Draws go to penalties.</li></ol>`:`<p class="eg-lede">Spin a league or a nation, draft your eleven, then take them through a ten-match <b>Gauntlet</b>. One defeat and you’re out.</p>`}
     ${ov==='start'?`<h3>Formation for free play</h3>${seg}`:''}
-    <div class="btns">${ov==='start'?`<button class="big hot" data-o="daily">${dd?'Today’s daily: '+dd.w+' win'+(dd.w===1?'':'s'):'Daily challenge'}<small>${dd?'Already played. See your XI':'Same spins, formation and fixtures for everyone'}</small></button><button class="big" data-o="free">Free play<small>${cfg.form} · fresh spins</small></button>`:`<button class="big hot" data-o="close">Got it</button>`}</div>
+    <div class="btns">${ov==='start'?`<button class="big hot" data-o="daily">${dd?'Today’s daily: '+dd.w+' win'+(dd.w===1?'':'s'):'Daily challenge'}<small>${dd?'Already played. See your XI':'Same spins, formation and fixtures for everyone'}</small></button><button class="big" data-o="free">Free play<small>${cfg.form} · fresh spins</small></button>`:`<button class="big hot" data-o="close">Got it</button>`}</div>${ov==='start'?'<button class="howb" data-o="how">How to play</button>':''}
     <div class="stat"><span>Best run <b>${stats.best}</b></span><span>Titles <b>${stats.champ}</b></span><span>Daily streak <b>${streak()}</b></span></div></div></div>`;
   }else if(ov==='end'){
     const res=G.res,w=G.wins;
@@ -689,7 +689,7 @@ document.addEventListener('click',async e=>{
   const fm=e.target.closest('[data-form]');if(fm){cfg.form=fm.dataset.form;sv('cfg',cfg);RG.sfx('click');return overlay()}
   const o=e.target.closest('[data-o]');
   if(o){const v=o.dataset.o;RG.sfx('click');
-    if(v==='close'){ov=null;overlay()}
+    if(v==='close'){ov=window.egBack||null;window.egBack=null;overlay()}else if(v==='how'){window.egBack='start';ov='rules';overlay()}
     else if(v==='free'){ov=null;overlay();newGame('free')}
     else if(v==='daily'){ov=null;overlay();const dd=daily[today()];newGame('daily');
       if(dd){G.form=dd.form;G.xi=dd.xi.map(i=>({p:P[i]}));G.phase='done';render();G.res=runGauntlet();G.wins=dd.w;ov='end';overlay()}}
@@ -713,7 +713,15 @@ newGame('free');ov='start';overlay();
 </script>
 
 <script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script>
-<!--EGBACK--><style>
+<style id="eg-fit">
+/* start screen: the pitch and the way in; the rules live behind "How to play" */
+.sheet .eg-lede{margin:2px 0 4px;font-size:16px;line-height:1.5;text-align:center;text-wrap:balance;opacity:.92}
+.howb{display:block;margin:2px auto 0;background:none;border:0;padding:10px 14px;font:inherit;font-weight:700;font-size:14px;color:inherit;opacity:.72;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1.5px;cursor:pointer}
+.howb:hover{opacity:1}
+header .wm{font-size:clamp(17px,5.2vw,26px)}
+header .hb{padding-inline:10px}
+.sheet .seg:has([data-form]){display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.sheet .seg [data-form]{padding-inline:0;font-size:13px;min-height:42px}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

@@ -808,15 +808,15 @@ function overlay(){
   if(ov==='rules'||ov==='start'){const hero=[CARDS.find(c=>c.nat==='BRA'&&c.pos==='FWD'),CARDS.slice().sort((a,b)=>b.v-a.v)[0],CARDS.find(c=>c.nat==='ENG'&&c.pos==='MID')];
     const seg=(k,l)=>`<div class="seg">${l.map(([v,t])=>`<button data-k="${k}" data-v="${v}" aria-pressed="${cfg[k]===v}">${t}</button>`).join('')}</div>`;
     h=`<div class="ov"><div class="sheet" role="dialog" aria-label="How to play">${ov==='start'?`<div class="hero">${hero.map(c=>cardHTML(c)).join('')}</div>`:''}<h2>${ov==='start'?'Starting XI':'How to play'}</h2>
-      <ol><li>You and the computer each hold <b>5 player cards</b>. The match lasts <b>${ROUNDS} rounds</b>.</li>
+      ${ov==='rules'?`<ol><li>You and the computer each hold <b>5 player cards</b>. The match lasts <b>${ROUNDS} rounds</b>.</li>
       <li>The leader sends out one player. The other side answers with a <b>higher rating</b> to win, and takes <b>every card played</b> into their squad.</li>
       <li><b>Double up:</b> answer with <b>two players from the leader's nation</b> and their ratings add together.</li>
       <li><b>Penalties:</b> a tie, or a <b>same-nation derby</b> (one card from the leader's nation), goes to a shoot-out. Each side turns over 3 cards from the pile; the highest total takes the lot.</li>
       <li>Can't win? <b>Pass</b>: the leader keeps their player, and you keep your cards. You also get <b>3 swaps</b> to send a card to the bottom of the pile and draw a new one.</li>
-      <li>At full time your <b>best XI</b> plays: 1 GK, 4 DEF, 3 MID, 3 FWD. Ratings add up, with a chemistry bonus for 3+ players from one nation. Gaps are filled out of position at a penalty.</li></ol>
+      <li>At full time your <b>best XI</b> plays: 1 GK, 4 DEF, 3 MID, 3 FWD. Ratings add up, with a chemistry bonus for 3+ players from one nation. Gaps are filled out of position at a penalty.</li></ol>`:`<p class="eg-lede">Five player cards each, eighteen rounds. Beat the rating, double up on nations, and your <b>best XI</b> decides it at full time.</p>`}
       <h3>Computer</h3>${seg('level',[['easy','Easy'],['normal','Normal'],['hard','Hard']])}
       <p class="stat">Your record: ${rec.w}W · ${rec.d}D · ${rec.l}L</p>
-      <div class="row"><button class="btn" data-o="${ov==='start'?'kick':'close'}" style="flex:1">${ov==='start'?'Kick off':'Back to the game'}</button></div></div></div>`}
+      <div class="row"><button class="btn" data-o="${ov==='start'?'kick':'close'}" style="flex:1">${ov==='start'?'Kick off':window.egBack?'Got it':'Back to the game'}</button></div>${ov==='start'?'<button class="howb" data-o="how">How to play</button>':''}</div></div>`}
   if(ov==='sq0'||ov==='sq1'){const p=+ov[2],X=bestXI(G.squads[p]);
     h=`<div class="ov"><div class="sheet"><h2>${p===0?'Your squad':'CPU squad'}</h2>${pitchHTML(G.squads[p],p===0?'Best XI':'CPU best XI',p===0?'var(--you)':'var(--cpu)')}
       <h3>Bench (${X.bench.length})</h3><div class="bench">${X.bench.map(c=>cardHTML(c,'mini')).join('')||'<span class="stat">Nobody yet.</span>'}</div>
@@ -843,7 +843,7 @@ document.addEventListener('click',e=>{
   const q=e.target.closest('[data-sq]');if(q){RG.sfx('open');ov='sq'+q.dataset.sq;return overlay()}
   const k=e.target.closest('[data-k]');if(k){cfg[k.dataset.k]=k.dataset.v;sv('cfg',cfg);RG.sfx('click');return overlay()}
   const o=e.target.closest('[data-o]');if(o){const v=o.dataset.o;RG.sfx('click');
-    if(v==='close'){ov=null;overlay()}else if(v==='kick'||v==='again'){ov=null;overlay();RG.sfx('whistle');newGame()}else if(v==='showend'){ov='end';overlay()}}
+    if(v==='close'){ov=window.egBack||null;window.egBack=null;overlay()}else if(v==='how'){window.egBack='start';ov='rules';overlay()}else if(v==='kick'||v==='again'){ov=null;overlay();RG.sfx('whistle');newGame()}else if(v==='showend'){ov='end';overlay()}}
   if(e.target.classList.contains('ov')){ov=null;overlay()}
 });
 $('#rulesBtn').onclick=()=>{RG.sfx('open');ov='rules';overlay()};
@@ -855,7 +855,14 @@ ov='start';overlay();
 </script>
 
 <script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script>
-<!--EGBACK--><style>
+<style id="eg-fit">
+/* start screen: the pitch and the way in; the rules live behind "How to play" */
+.sheet .eg-lede{margin:2px 0 4px;font-size:16px;line-height:1.5;text-align:center;text-wrap:balance;opacity:.92}
+.howb{display:block;margin:2px auto 0;background:none;border:0;padding:10px 14px;font:inherit;font-weight:700;font-size:14px;color:inherit;opacity:.72;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1.5px;cursor:pointer}
+.howb:hover{opacity:1}
+header .wm{font-size:clamp(17px,5.2vw,26px)}
+header .hb{padding-inline:10px}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

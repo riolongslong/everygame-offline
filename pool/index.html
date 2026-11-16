@@ -669,7 +669,13 @@ balls=rack();groups=[null,null];turn=0;size();overlay();
 // the break shot counts as open: groups are picked from the first clean pot after it
 const _shoot=shoot;shoot=(a,p)=>{const brk=balls.filter(b=>b.id&&!b.in).length===15;_shoot(a,p);if(shot)shot.isBreak=brk&&groups[0]==null};
 </script>
-<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><!--EGBACK--><style>
+<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><style id="eg-fit">
+/* Pool · fit: the table can no longer grow under the message bar and hide Hint */
+.stage{grid-template-rows:minmax(0,1fr)}
+.stage canvas,.power{min-height:0}
+.bar{min-height:40px}
+.pl{transition:border-color .2s,box-shadow .25s,background-color .25s}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

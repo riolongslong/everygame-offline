@@ -1167,7 +1167,12 @@ render();initCaps();
   setTimeout(go,300)})();
 </script>
 <!--/PARTY-->
-<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><!--EGBACK--><style>
+<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><style id="eg-fit">
+/* Shed · fit: one-row header; bigger cards on phones, where there is room for them */
+header{flex-wrap:nowrap!important;gap:8px}
+header button{padding:.45em .65em}
+@media (max-width:520px){:root{--cw:clamp(46px,12.6vw,62px)}}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

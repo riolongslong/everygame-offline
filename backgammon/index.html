@@ -818,7 +818,20 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ov){ov=null;overlay()}});
 render();
 </script>
-<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><!--EGBACK--><style>
+<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><style id="eg-fit">
+/* Backgammon · fit: one-row header, a taller board on phones, controls anchored below */
+header{flex-wrap:nowrap!important}
+.wm{font-size:clamp(16px,4.8vw,24px)}
+#app:has(>.board){min-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));box-sizing:border-box;grid-template-rows:auto 1fr auto auto;align-content:stretch}
+#app:has(>.board)>.board{align-self:center}
+@media (max-width:600px) and (orientation:portrait){
+  #app:has(>.board)>.board{aspect-ratio:auto;height:min(calc(100dvh - 250px),128vw)}
+}
+.status{align-items:center}
+.status button{min-height:44px}
+.pips{justify-content:center}
+header{gap:6px}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

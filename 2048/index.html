@@ -73,7 +73,7 @@ h1{filter:drop-shadow(0 4px 14px rgba(255,122,182,.35))}
   <header><h1>2048</h1><div class="grow"></div><div class="box"><span>Score</span><b id="score">0</b></div><div class="box"><span>Best</span><b id="best">0</b></div></header>
   <div class="bar"><span class="grow"></span><button class="hint" id="hintBtn">Hint</button><button class="alt" id="undoBtn">Undo</button><button class="btn" id="newBtn">New game</button></div>
   <div class="board" id="board"><div class="cells"></div><div class="tiles" id="tiles"></div></div>
-  <p class="how"><a href="../index.html" style="color:var(--gold);font-weight:700">All games</a> · Join matching tiles to reach 2048. Swipe or use the arrow keys. Hint suggests the best move by looking a couple of moves ahead.</p>
+  <p class="how">Join matching tiles to reach 2048. Swipe or use the arrow keys. Hint suggests the best move by looking a couple of moves ahead.</p>
 </div>
 
 <script>
@@ -545,12 +545,14 @@ function draw(sliding){
     el.style.zIndex=t.ghost?1:2;
   }
   box.querySelectorAll('.tile').forEach(el=>{if(!seen.has(el.dataset.id))el.remove()});
-  $('#score').textContent=score;$('#best').textContent=best;
+  {const sb=$('#score'),was=+sb.textContent||0;sb.textContent=score;$('#best').textContent=best;
+    if(score>was&&was>0||score>was&&tiles.length>2){sb.classList.remove('bump');void sb.offsetWidth;sb.classList.add('bump');setTimeout(()=>sb.classList.remove('bump'),220);
+      const fl=document.createElement('i');fl.className='gain';fl.textContent='+'+(score-was);sb.parentNode.appendChild(fl);setTimeout(()=>fl.remove(),800)}}
   $('#undoBtn').disabled=!prev;
   const ov=$('#board .over');ov&&ov.remove();
   if(!sliding&&(over||(won&&!keep))){
     const d=document.createElement('div');d.className='over';
-    d.innerHTML=over?`<div><h2>No more moves</h2><button class="btn" data-a="new">Try again</button>${prev?' <button class="alt" data-a="undo">Undo</button>':''}</div>`:`<div><h2>2048!</h2><button class="btn" data-a="keep">Keep going</button> <button class="alt" data-a="new">New game</button></div>`;
+    d.innerHTML=over?`<div><h2>No more moves</h2><p class="fin">You scored <b>${score.toLocaleString('en-GB')}</b>${score>=best&&score>0?' · a new best':' · best '+best.toLocaleString('en-GB')}</p><button class="btn" data-a="new">Try again</button>${prev?' <button class="alt" data-a="undo">Undo</button>':''}</div>`:`<div><h2>2048!</h2><p class="fin">You made the 2048 tile with <b>${score.toLocaleString('en-GB')}</b> points.</p><button class="btn" data-a="keep">Keep going</button> <button class="alt" data-a="new">New game</button></div>`;
     $('#board').appendChild(d);
   }
 }
@@ -582,7 +584,28 @@ document.addEventListener('click',e=>{
 });
 if(load()){over=!canMove(grid());draw()}else newGame();
 </script>
-<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><!--EGBACK--><style>
+<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><style id="eg-fit">
+/* 2048 · fit: one-row header that never overflows, board centred in the screen, controls under the thumb */
+#app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr auto auto;min-height:100dvh;box-sizing:border-box;align-content:stretch}
+header{align-items:center;gap:8px}
+h1{font-size:clamp(34px,11vw,54px);flex:none}
+.box{min-width:0;padding:6px 10px;flex:0 1 84px}
+.box b{display:block;font-size:clamp(16px,5vw,20px);transition:transform .2s var(--eg-spring)}
+.box b.bump{transform:scale(1.22)}
+.board{order:2;align-self:center;width:100%;max-width:min(440px,calc(100dvh - 250px));justify-self:center;box-sizing:border-box}
+.bar{order:3;justify-content:center}
+.bar .grow{display:none}
+.bar button{flex:1 1 0;min-height:48px;padding-inline:8px}
+.how{order:4;text-align:center;text-wrap:balance}
+.over{animation:eg-scrim .3s ease both}
+.over>*{animation:eg-rise .45s var(--eg-ease) both}
+.box{position:relative}
+.gain{position:absolute;left:0;right:0;top:2px;font:800 13px var(--display);color:#ffc23d;font-style:normal;pointer-events:none;animation:gain .8s var(--eg-ease) both}
+@keyframes gain{from{opacity:0;transform:translateY(8px)}25%{opacity:1}to{opacity:0;transform:translateY(-22px)}}
+.fin{margin:0 0 16px;color:#cfc8dc;font-size:15px}.fin b{color:#ffe7b0}
+.over button{min-height:46px;margin:3px}
+@media (prefers-reduced-motion:reduce){.gain{display:none}}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

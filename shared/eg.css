@@ -1,0 +1,46 @@
+/* EveryGame Offline — shared polish layer.
+   Loaded by every game after its own styles. Everything here is either zero-specificity (:where) so a game's own
+   look always wins, or a deliberate platform-wide rule (header standard, overlay motion, reduced motion). */
+:root{
+  --eg-ease:cubic-bezier(.2,.8,.2,1);      /* settle: things arriving */
+  --eg-spring:cubic-bezier(.34,1.4,.64,1); /* overshoot: things popping */
+  --eg-fast:.12s; --eg-med:.24s; --eg-slow:.42s;
+}
+
+/* Hub <-> game: a quick cross-fade instead of a white flash, where the browser supports it */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:eg-vt-out .14s ease both}
+::view-transition-new(root){animation:eg-vt-in .26s var(--eg-ease) both}
+@keyframes eg-vt-out{to{opacity:0}}
+@keyframes eg-vt-in{from{opacity:0;transform:translateY(6px)}}
+
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:clip}
+:where(button,a,[role=button],label,summary){-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+
+/* Every control answers a press, and says when it can't be used */
+:where(button){transition:transform var(--eg-fast) var(--eg-ease),background-color .16s,border-color .16s,box-shadow .16s,opacity .16s,color .16s}
+:where(button:not(:disabled)):where(:active){transform:scale(.96)}
+:where(button:disabled){opacity:.42;cursor:not-allowed}
+:where(button,a,input,select,[tabindex]):where(:focus-visible){outline:3px solid currentColor;outline-offset:2px}
+
+/* Header standard: back · title · tools, always one row. The chevron already goes home, so the old text links go. */
+header{min-width:0;max-width:100%}
+header>a[href="../index.html"]:not(.eg-back),.hublink{display:none!important}
+header>.wm{min-width:0;flex-shrink:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header>.eg-back,header>button,header>#snd,header>#rgslot{flex:none}
+
+/* Overlays (menus, rules, results) arrive rather than appear */
+.overlay[data-eg-in],.ov[data-eg-in]{animation:eg-scrim var(--eg-med) ease both}
+.overlay[data-eg-in]>*,.ov[data-eg-in]>*{animation:eg-rise var(--eg-slow) var(--eg-ease) both}
+@keyframes eg-scrim{from{opacity:0}}
+@keyframes eg-rise{from{opacity:0;transform:translateY(18px) scale(.97)}}
+
+/* Long dialogs scroll inside the screen instead of running off it */
+.overlay,.ov{overflow-y:auto;overscroll-behavior:contain;align-items:safe center}
+
+@media (prefers-reduced-motion:reduce){
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+  .overlay[data-eg-in],.ov[data-eg-in],.overlay[data-eg-in]>*,.ov[data-eg-in]>*{animation:none}
+  :where(button){transition:none}
+}

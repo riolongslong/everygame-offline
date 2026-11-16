@@ -593,7 +593,14 @@ addEventListener('keydown',e=>{if(e.key==='f'||e.key==='F')setMode(!flagMode);if
 addEventListener('resize',()=>{const b=$('#board');b.style.setProperty('--cs',cellSize()+'px')});
 newGame();
 </script>
-<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><!--EGBACK--><style>
+<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><style id="eg-fit">
+/* Minesweeper · fit: field centred, tools anchored at the bottom where the thumb is */
+#app{min-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));box-sizing:border-box;grid-template-rows:auto auto auto 1fr auto auto;align-content:stretch}
+.boardwrap{align-self:center}
+.wm{font-size:clamp(17px,5.4vw,24px)}
+.bar button{min-height:46px}
+.tip{text-align:center;text-wrap:balance;margin:0}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

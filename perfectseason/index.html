@@ -639,12 +639,12 @@ function overlay(anim){
   if(ov==='rules'||ov==='start'){
     const dd=daily[today()];
     h=`<div class="ov"><div class="sheet" role="dialog" aria-label="How to play"><h2>Perfect <b>Season</b></h2>
-    <ol><li><b>Spin</b> for a franchise and a decade, from the 1960s to the 2020s.</li>
+    ${ov==='rules'?`<ol><li><b>Spin</b> for a franchise and a decade, from the 1960s to the 2020s.</li>
     <li>Draft <b>one player</b> from that roster and put him in an open slot: <b>PG, SG, SF, PF or C</b>.</li>
     <li>You get <b>one team respin</b> and <b>one era respin</b> per game. Use them wisely.</li>
     <li>Five picks make your starting five. We project an <b>82-game record</b> from real per-game points, rebounds, assists, steals and blocks.</li>
-    <li>Stats are <b>era-adjusted</b>, so 1960s numbers are scaled to the modern game. Balance matters: five scorers fight over one ball, and players out of position lose value.</li></ol>
-    <div class="btns">${ov==='start'?`<button class="big hot" data-o="daily">${dd?'Today’s daily: '+dd.w+'–'+(82-dd.w):'Daily challenge'}<small>${dd?'Already played. See your five':'Same spins for everyone today'}</small></button><button class="big" data-o="free">Free play<small>Fresh random spins</small></button>`:`<button class="big hot" data-o="close">Got it</button>`}</div>
+    <li>Stats are <b>era-adjusted</b>, so 1960s numbers are scaled to the modern game. Balance matters: five scorers fight over one ball, and players out of position lose value.</li></ol>`:`<p class="eg-lede">Spin a franchise and a decade, draft one player per spin, and see how close your five get to a perfect <b>82–0</b>.</p>`}
+    <div class="btns">${ov==='start'?`<button class="big hot" data-o="daily">${dd?'Today’s daily: '+dd.w+'–'+(82-dd.w):'Daily challenge'}<small>${dd?'Already played. See your five':'Same spins for everyone today'}</small></button><button class="big" data-o="free">Free play<small>Fresh random spins</small></button>`:`<button class="big hot" data-o="close">Got it</button>`}</div>${ov==='start'?'<button class="howb" data-o="how">How to play</button>':''}
     <div class="stat"><span>Best <b>${stats.best}–${82-stats.best}</b></span><span>Games <b>${stats.games}</b></span><span>Daily streak <b>${streak()}</b></span></div></div></div>`;
   }else if(ov==='end'){
     const{w,T}=G.result,dots=seasonDots(w,G.seed);
@@ -671,7 +671,7 @@ function shareText(){const{w}=G.result;return `Perfect Season ${G.mode==='daily'
 document.addEventListener('click',async e=>{
   const o=e.target.closest('[data-o]');
   if(o){const v=o.dataset.o;RG.sfx('click');
-    if(v==='close'){ov=null;overlay()}
+    if(v==='close'){ov=window.egBack||null;window.egBack=null;overlay()}else if(v==='how'){window.egBack='start';ov='rules';overlay()}
     else if(v==='free'){ov=null;overlay();newGame('free')}
     else if(v==='daily'){ov=null;overlay();const dd=daily[today()];newGame('daily');
       if(dd){G.team=dd.five.map(([n,s,f,er])=>({p:DB[f][er].p.find(p=>p[0]===n),s,f,e:er})).filter(t=>t.p);G.round=5;G.phase='done';render();G.result={w:wins(G.team),T:totals(G.team)};ov='end';overlay()}}
@@ -695,7 +695,14 @@ newGame('free');ov='start';overlay();
 </script>
 
 <script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script>
-<!--EGBACK--><style>
+<style id="eg-fit">
+/* start screen: the pitch and the way in; the rules live behind "How to play" */
+.sheet .eg-lede{margin:2px 0 4px;font-size:16px;line-height:1.5;text-align:center;text-wrap:balance;opacity:.92}
+.howb{display:block;margin:2px auto 0;background:none;border:0;padding:10px 14px;font:inherit;font-weight:700;font-size:14px;color:inherit;opacity:.72;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1.5px;cursor:pointer}
+.howb:hover{opacity:1}
+header .wm{font-size:clamp(17px,5.2vw,26px)}
+header .hb{padding-inline:10px}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

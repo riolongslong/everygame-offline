@@ -598,7 +598,21 @@ $('#newBtn').onclick=()=>{RG.sfx('click');newGame()};$('#undo').onclick=undo;$('
 addEventListener('keydown',e=>{if(/^[1-7]$/.test(e.key))play(+e.key-1);if(e.key==='Escape'&&ov){ov=null;overlay()}});
 newGame();
 </script>
-<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><!--EGBACK--><style>
+<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><style id="eg-fit">
+/* 4 in a Row · fit: the board owns the middle of the screen; table settings sit quietly underneath */
+#app{min-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));box-sizing:border-box;grid-template-rows:auto auto 1fr auto auto;align-content:stretch}
+.players{order:1}
+.boardwrap{order:2;align-self:center;justify-self:center;width:100%;max-width:min(520px,calc((100dvh - 360px)*1.12))}
+.bar{order:3}
+.bar button{min-height:46px}
+.opts{order:4;justify-content:center;gap:6px}
+.opts .seg button{font-size:12px;padding:.5em .6em}
+.wm{font-size:clamp(18px,5.6vw,24px)}
+.pl{transition:border-color .2s,transform .25s var(--eg-spring),box-shadow .25s,background-color .25s}
+.pl b{transition:transform .3s var(--eg-spring)}
+.bar .msg{flex:1 0 100%;min-width:0;text-align:center;min-height:1.4em}
+.bar button{flex:1 1 0}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}
