@@ -546,7 +546,30 @@ $('#menuBtn').onclick=()=>{clearTimeout(cpuT);ov='menu';overlay()};
 $('#hint').onclick=hint;
 overlay();
 </script>
-<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
+<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><style id="eg-fit">
+/* Find Match: restyle start overlay from plain white to themed */
+/* Start overlay sheet: match the game's orange/brown theme */
+.sheet{background:linear-gradient(160deg,#fff5eb,#ffe4c8);border-color:#8b4513;box-shadow:0 10px 0 rgba(43,19,0,.5),inset 0 0 60px rgba(255,122,47,.08)}
+.sheet h2{color:#8b4513;text-shadow:0 2px 0 rgba(139,69,19,.2);font-size:clamp(32px,10vw,38px)}
+.sheet p{color:#5a3010;font-size:14px}
+.lbl{color:#8b4513}
+/* Chips (option buttons): themed */
+.chip{background:rgba(139,69,19,.1);border:2px solid rgba(139,69,19,.3);color:#5a3010}
+.chip[aria-pressed="true"]{background:#8b4513;color:#fff;border-color:#8b4513}
+/* Go button: warmer */
+.go{background:#ff7a2f;color:#fff;border:3px solid #8b4513;box-shadow:0 4px 0 #5a3010}
+/* Alt button: themed */
+.alt{background:rgba(255,255,255,.8);border-color:#8b4513;color:#5a3010}
+/* In-play: ensure hint button stays in view */
+.controls{padding-bottom:env(safe-area-inset-bottom,0px)}
+/* Bigger cards on small phones */
+@media (max-height:700px){
+  .card{height:min(100%,76vw,280px)}
+  .card.mid{width:min(40vw,22vh,200px)}
+}
+/* Result overlay: themed too */
+.overlay .sheet h2{color:#8b4513}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

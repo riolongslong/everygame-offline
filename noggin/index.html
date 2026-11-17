@@ -932,7 +932,31 @@ show('menu');M.state='play';
 </script>
 
 <script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script>
-<link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
+<style id="eg-fit">
+/* Noggin League: tighter character picks, better header visibility */
+/* Header: ensure it's always visible */
+header{flex-wrap:nowrap;gap:6px}
+.wm{font-size:clamp(18px,5vw,28px)}
+/* Character picker: tighter grid */
+.picks{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px}
+.pick{padding:8px 4px;border-radius:12px;gap:1px}
+.pick img{width:52px;height:52px}
+.pick b{font-size:14px}
+/* Sheet: scroll nicely on phones */
+.sheet{max-height:calc(100dvh - 28px);gap:10px;padding:16px}
+.sheet h2{font-size:clamp(26px,8vw,32px)}
+/* Buttons: bigger tap targets */
+.btn{padding:14px 18px;font-size:clamp(16px,4.5vw,19px)}
+.btn.alt{padding:12px 16px}
+/* Match canvas: maximise height */
+.cv{border-radius:10px}
+/* Touch pads: slightly bigger kick button */
+.pad button.k{width:78px;height:78px;font-size:18px}
+@media (max-height:700px){
+  .pad button{width:58px;height:58px}
+  .pad button.k{width:68px;height:68px}
+}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

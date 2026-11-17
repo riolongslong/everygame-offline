@@ -609,7 +609,21 @@ fit();menu();requestAnimationFrame(frame);
 </script>
 
 <script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script>
-<link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
+<style id="eg-fit">
+/* Neon Hockey: already strong — polish start panel, ensure HUD doesn't overlap */
+/* Panel text sizing */
+.panel h1{font-size:clamp(24px,7vw,30px)}
+.panel p{font-size:clamp(11px,3vw,12px);line-height:1.5}
+/* Tighter buttons on small screens */
+.btn{padding:11px;font-size:clamp(13px,3.5vw,15px)}
+.row{gap:6px}
+.row .btn{padding:10px 8px}
+/* Result panel: bigger score */
+.panel h2{font-size:clamp(28px,9vw,34px)}
+/* Ensure canvas fills the viewport */
+#wrap{padding:0}
+canvas{border-radius:0}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

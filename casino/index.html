@@ -2103,7 +2103,34 @@ if(RETURNED)setTimeout(()=>toast(`${fmt(RETURNED)} chips from your poker seat ar
 initStore().then(()=>{if(screen==="lobby")lobby()});
 </script>
 
-<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
+<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><style id="eg-fit">
+/* Casino: lobby is polished — improve phone layout for individual tables */
+/* Tighter lobby grid on phones */
+.lobby{gap:10px}
+@media (max-width:480px){
+  .lobby{grid-template-columns:repeat(2,1fr)}
+  .tile{min-height:200px;padding:12px}
+  .tile h2{font-size:22px}
+  .tile .art{height:90px}
+}
+/* Better table fit on phones */
+@media (max-width:560px){
+  .table{padding:14px 12px;border-radius:18px;box-shadow:inset 0 0 0 7px #3b2412,inset 0 0 0 9px #6b4423,0 14px 30px rgba(0,0,0,.45)}
+  /* Roulette board: horizontal scroll hint */
+  .board{-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+  /* Poker seats on tiny screens */
+  .seats{gap:6px}
+  .seat{padding:8px 6px}
+  .seat .nm{font-size:13px}
+}
+/* Stats row: ensure it wraps nicely */
+.stats{gap:8px}
+.stat b{font-size:18px}
+/* Sign: responsive padding */
+.sign{padding:clamp(16px,4vw,26px) 16px clamp(14px,3.5vw,22px)}
+/* Cashier buttons */
+.cashier{gap:10px}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}

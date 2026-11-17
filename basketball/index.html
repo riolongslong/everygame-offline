@@ -639,7 +639,26 @@ $('#menuBtn').onclick=()=>{ov='menu';overlay()};
 addEventListener('resize',size);
 P=[player(0,40),player(1,72)];score=[0,0];setup(0);size();overlay();requestAnimationFrame(loop);
 </script>
-<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
+<script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("../sw.js").catch(()=>{});</script><style id="eg-fit">
+/* Streetball: maximise canvas, tighten pad row, compact message */
+#app{padding-block:6px 8px;gap:4px}
+header{flex-wrap:nowrap}
+.board{padding:4px 10px}
+.msg{font-size:13px;min-height:2.4em;line-height:1.3}
+.pad{gap:4px}
+/* Bigger canvas on phones by squeezing scoreboard and pad */
+@media (max-height:740px){
+  .board{padding:3px 8px;border-radius:10px}
+  .sc{font-size:24px}
+  .pad{gap:3px}
+  .k{width:50px;height:50px;font-size:22px}
+  .act{width:66px;height:66px;font-size:13px}
+  .act.alt{width:52px;height:52px;font-size:11px}
+}
+/* Overlay sheets: tighten on short phones */
+.sheet h2{font-size:clamp(28px,8vw,36px)}
+.sheet p{font-size:14px}
+</style><link rel="stylesheet" href="../shared/eg.css"><script src="../shared/eg.js" defer></script><!--EGBACK--><style>
 .eg-back{position:relative;z-index:9001;box-sizing:border-box;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;flex:none;color:inherit;text-decoration:none;
   background:rgba(127,127,127,.16);border:1.5px solid rgba(127,127,127,.35);-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .eg-back:active{transform:scale(.9)}.eg-back svg{width:18px;height:18px}
